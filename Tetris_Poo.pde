@@ -4,20 +4,20 @@ final int ROWS = 20;
 final int COLS = 10;
 final int LENGTH = 20;
 int mov = 0;
-int exc = 0;
 int bajar = 0;
 int t = 0; //tiempo
 int vel = 1500;
 int[][] tableu = new int[ROWS][COLS];
 byte[][] T = {{0, 0, 0}, {1, 1, 1}, {0, 1, 0}};
 byte[][] O = {{1, 1}, {1, 1}};
-byte[][] I = {{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}};
+byte[][] I = {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}};
 byte[][] L = {{0, 1, 0}, {0, 1, 0}, {0, 1, 1}};
 byte[][] J = {{0, 1, 0}, {0, 1, 0}, {1, 1, 0}};
 byte[][] S = {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}};
 byte[][] Z = {{0, 1, 1}, {1, 1, 0}, {0, 0, 0}};
 byte[][][] tetrominos = {T, O, I, L, J, S, Z};
-//boolean vr;
+boolean vm;
+boolean IRot = true;
 
 void setup() {
   size(600, 600);
@@ -161,7 +161,7 @@ class Tetromino {
 }
 
 Boolean siguiente() {
-  if (bajar > 16) {
+  if ((P.shape != Z && P.shape != S && bajar > 16) || (P.shape == Z || P.shape == S && bajar > 17)) {
     return true;
   }
   return false;
@@ -183,7 +183,7 @@ void drawTablero() {
         pop();
       } else if (tableu[i][j] == 1) {
         push();
-        fill(0,100,255);
+        fill(128, 15, 17);
         stroke(255);
         translate(j * LENGTH, i * LENGTH);
         rect(180, 79, LENGTH, LENGTH);
@@ -201,20 +201,29 @@ void glue(int[][] p) {
     tableu[p[0][3]+bajar][p[1][3]+mov] = 0;
   }
   catch(ArrayIndexOutOfBoundsException e) {
-    if (mov<=-4){
+    int exc = 0;
+    if (mov<=-4) {
       mov++;
       exc--;
-    } else if (mov >=4) {
+    } else if ((mov >=4 && P.shape != I) || (mov > 3 && P.shape == I && IRot == false) || (mov > 2 && P.shape == I && IRot == true)) {
       mov--;
       exc++;
     }
     if (siguiente() == true) {
       bajar--;
+      if (mov <= -4) {
+        mov++;
+        bajar++;
+      } else if ((mov >= 3 && P.shape != I) || (mov == 3 && P.shape == I && IRot == false) || (mov == 2 && P.shape == I && IRot == true)) {
+        mov-=0;
+        bajar++;
+      }
       tableu[p[0][0]+bajar][p[1][0]+mov+exc] = 1;
       tableu[p[0][1]+bajar][p[1][1]+mov+exc] = 1;
       tableu[p[0][2]+bajar][p[1][2]+mov+exc] = 1;
       tableu[p[0][3]+bajar][p[1][3]+mov+exc] = 1;
-      bajar = 0;
+      bajar = -1;
+      mov = 0;
       P.shape = P1.shape;
       P1.shape = tetrominos[int(random(7))];
     }
@@ -222,10 +231,16 @@ void glue(int[][] p) {
   }
 }
 
+void coloision(int[][] p) {
+}
+
 void keyPressed() {
   if (key == CODED) {
     if (keyCode == UP) {
       P.rotate();
+      if (P.shape == I) {
+        IRot = !IRot;
+      }
     }
     if (keyCode == DOWN) {
       //  P.reflect();
