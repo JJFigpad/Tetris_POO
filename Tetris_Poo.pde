@@ -7,6 +7,7 @@ int mov = 0;
 int bajar = 0;
 int t = 0; //tiempo
 int vel = 1500;
+int Rc = 0;
 int[][] tableu = new int[ROWS][COLS];
 byte[][] T = {{0, 0, 0}, {1, 1, 1}, {0, 1, 0}};
 byte[][] O = {{1, 1}, {1, 1}};
@@ -16,7 +17,6 @@ byte[][] J = {{0, 1, 0}, {0, 1, 0}, {1, 1, 0}};
 byte[][] S = {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}};
 byte[][] Z = {{0, 1, 1}, {1, 1, 0}, {0, 0, 0}};
 byte[][][] tetrominos = {T, O, I, L, J, S, Z};
-boolean vm;
 boolean IRot = true;
 
 void setup() {
@@ -28,7 +28,7 @@ void setup() {
   }
   P = new Tetromino();
   P1 = new Tetromino();
-  P.shape = tetrominos[int(random(7))];
+  P.shape = tetrominos[0];
   P1.shape = tetrominos[int(random(7))];
 }
 
@@ -59,7 +59,7 @@ void draw() {
   drawTablero();
   P.displaytoP();
   P1.displayP();
-  println(bajar);
+  //println(bajar);
 }
 
 class Tetromino {
@@ -145,27 +145,28 @@ class Tetromino {
 
   private int[][] update() {
     int[] x = new int[4], y = new int[4];
-    int[][] posiciones = {x, y};
+    int[][] posiciones = {y, x};
     int c=0;
     for (int i = 0; i < shape.length; i++) {
       for (int j = 0; j < shape[i].length; j++) {
         if (shape[i][j] != 0) {
-          x[c] = i;
-          y[c] = j+4;
+          y[c] = i;
+          x[c] = j+4;
           c++;
         }
       }
     }
+    //println(posiciones[0][3]+bajar);
     return posiciones;
   }
 }
 
-Boolean siguiente() {
-  if ((P.shape != Z && P.shape != S && bajar > 16) || (P.shape == Z || P.shape == S && bajar > 17)) {
-    return true;
-  }
-  return false;
-}
+/*Boolean siguiente() {
+ if ((P.shape != Z && P.shape != S && bajar > 16) || (P.shape == Z || P.shape == S && bajar > 17) || (P.shape == I && IRot == false && bajar > 16) && millis()>=t+1500) {
+ return true;
+ }
+ return false;
+ }*/
 
 /**
  * Display board
@@ -194,6 +195,8 @@ void drawTablero() {
 }
 
 void glue(int[][] p) {
+  boolean vmd = false;
+  boolean vmi = false;
   try {
     tableu[p[0][0]+bajar][p[1][0]+mov] = 0;
     tableu[p[0][1]+bajar][p[1][1]+mov] = 0;
@@ -201,37 +204,37 @@ void glue(int[][] p) {
     tableu[p[0][3]+bajar][p[1][3]+mov] = 0;
   }
   catch(ArrayIndexOutOfBoundsException e) {
-    int exc = 0;
     if (mov<=-4) {
       mov++;
-      exc--;
+      vmi = true;
     } else if ((mov >=4 && P.shape != I) || (mov > 3 && P.shape == I && IRot == false) || (mov > 2 && P.shape == I && IRot == true)) {
       mov--;
-      exc++;
+      vmd = true;
     }
-    if (siguiente() == true) {
-      bajar--;
-      if (mov <= -4) {
+  }
+  for (int i = 0; i < 4; i++) {
+    if (p[0][i]+bajar > 19) {
+      if (vmd == true)
         mov++;
-        bajar++;
-      } else if ((mov >= 3 && P.shape != I) || (mov == 3 && P.shape == I && IRot == false) || (mov == 2 && P.shape == I && IRot == true)) {
-        mov-=0;
-        bajar++;
-      }
-      tableu[p[0][0]+bajar][p[1][0]+mov+exc] = 1;
-      tableu[p[0][1]+bajar][p[1][1]+mov+exc] = 1;
-      tableu[p[0][2]+bajar][p[1][2]+mov+exc] = 1;
-      tableu[p[0][3]+bajar][p[1][3]+mov+exc] = 1;
-      bajar = -1;
+      else if (vmi == true)
+        mov--;
+      tableu[p[0][0]+bajar-1][p[1][0]+mov] = 1;
+      tableu[p[0][1]+bajar-1][p[1][1]+mov] = 1;
+      tableu[p[0][2]+bajar-1][p[1][2]+mov] = 1;
+      tableu[p[0][3]+bajar-1][p[1][3]+mov] = 1; //Casilla del tablero
+      if (P.shape != I && IRot == true)
+        bajar = -1;
+      else
+        bajar = -2;
       mov = 0;
+      Rc = 0;
+      IRot = true;
       P.shape = P1.shape;
       P1.shape = tetrominos[int(random(7))];
+      break;
     }
-    exc = 0;
   }
-}
-
-void coloision(int[][] p) {
+  println(p[1][0]+mov);
 }
 
 void keyPressed() {
@@ -240,6 +243,10 @@ void keyPressed() {
       P.rotate();
       if (P.shape == I) {
         IRot = !IRot;
+      } else {
+        Rc++;
+        if (Rc == 4)
+          Rc = 0;
       }
     }
     if (keyCode == DOWN) {
