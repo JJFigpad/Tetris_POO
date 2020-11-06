@@ -1,13 +1,15 @@
 Tetromino P;
 Tetromino P1;
+Tetromino temp;
 final int ROWS = 20;
 final int COLS = 10;
 final int LENGTH = 20;
 int mov = 0;
 int bajar = 0;
 int t = 0; //tiempo
-int vel = 1500;
+int vel;
 int Rc = 0;
+int score = 0, nivel = 1, nl = 0;
 int[][] tableu = new int[ROWS][COLS];
 byte[][] T = {{0, 0, 0}, {1, 1, 1}, {0, 1, 0}};
 byte[][] O = {{1, 1}, {1, 1}};
@@ -22,6 +24,7 @@ boolean bv = true, movdv = true, moviv = true, rv = true;
 
 void setup() {
   size(600, 600);
+  textSize(20);
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
       tableu[i][j] = 0;
@@ -29,11 +32,12 @@ void setup() {
   }
   P = new Tetromino();
   P1 = new Tetromino();
-  P.shape = tetrominos[int(random(7))];
+  P.shape = tetrominos[2];
   P1.shape = tetrominos[int(random(7))];
 }
 
 void draw() {
+  vel = 1500-50*(nivel-1);
   background(20);
   if (millis() >= t+1500) {
     bajar++;
@@ -60,7 +64,8 @@ void draw() {
   drawTablero();
   P.displaytoP();
   P1.displayP();
-  //println(bajar);
+  Extras();
+  println(Rc);
 }
 
 class Tetromino {
@@ -79,19 +84,6 @@ class Tetromino {
   public void setShape(byte[][] newShape) {
     this.shape = newShape;
   }
-
-  /**
-   * Horizontal reflection
-   */
-  /*public void reflect() {
-   int l = shape.length / 2;
-   int[] temp;
-   for (int i = 0; i < l; i++) {
-   temp = shape[shape.length - 1 - i];
-   shape[shape.length - i - 1] = shape[i];
-   shape[i] = temp;
-   }
-   }*/
 
   /**
    * Clockwise rotation
@@ -165,6 +157,7 @@ class Tetromino {
  * Display board
  */
 void drawTablero() {
+  int borrar = 0, tempi = 0;
   glue(P.update());
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLS; j++) {
@@ -182,8 +175,23 @@ void drawTablero() {
         translate(j * LENGTH, i * LENGTH);
         rect(180, 79, LENGTH, LENGTH);
         pop();
+        borrar++;
+      }
+      if (borrar == COLS) {
+        borrar = 0;
+        tempi = i;
+        nl++;
+        score += 100;
+        if (nl%5 == 0 && nl > 0 && nivel < 32)
+          nivel++;
+        for (int i1 = tempi; i1 >= 1; i1--) {
+          for (int j1 = 0; j1 < COLS; j1++) {
+            tableu[i1][j1] = tableu[i1-1][j1];
+          }
+        }
       }
     }
+    borrar = 0;
   }
 }
 
@@ -222,7 +230,7 @@ void glue(int[][] p) {
   }
   for (int i = 0; i < 4; i++) {
     try {
-      if (tableu[p[0][i]+bajar][p[1][i]+mov+1] != 0) {
+      if (p[1][i]+mov+1 < 10 && tableu[p[0][i]+bajar][p[1][i]+mov+1] != 0) {
         movdv = false;
       }
       if (tableu[p[0][i]+bajar][p[1][i]+mov-1] != 0) {
@@ -230,8 +238,9 @@ void glue(int[][] p) {
       }
     }
     catch(ArrayIndexOutOfBoundsException e) {
-      //if(((mov >4 && P.shape != I) || (mov >= 3 && P.shape == I && IRot == false) || (mov >= 2 && P.shape == I && IRot == true)) && !vmd )
-      //  movdv = false;
+      /**
+       *Este espacio se deja vacio porque no se espera que ocurra nada especial.
+       */
     }
     if (p[0][i]+bajar > 19) {
       if (vmd)
@@ -265,27 +274,49 @@ void glue(int[][] p) {
       }
     }
     catch(ArrayIndexOutOfBoundsException e) {
-      mov--;
+      /**
+       *Este espacio se deja vacio porque no se espera que ocurra nada especial.
+       */
     }
   }
-  println(vmd);
 }
 
+void Extras() { //Texto y decoracion
+  push();
+  textSize(40);
+  fill(255, 0, 0);
+  text("TETRIS", 435, 415);
+  pop();
+  fill(255, 0, 0);
+  text("Lineas:", 30, 230);
+  text("Puntaje:", 30, 360);
+  text("Nivel:", 480, 300);
+  fill(255);
+  text(nivel, 500, 330);
+  text(nl, 50, 260);
+  text(score, 50, 390);
+}
+
+
 void keyPressed() {
+  if (key == 'q') {
+    temp = P1;
+    P1 = P;
+    P = temp;
+  }
   if (key == CODED) {
     if (keyCode == UP && rv) {
       P.rotate();
+      Rc++;
+      if (Rc == 4)
+        Rc = 0;
       if (P.shape == I) {
         IRot = !IRot;
-      } else {
-        Rc++;
-        if (Rc == 4)
-          Rc = 0;
       }
     }
     if (keyCode == DOWN && bv) {
-      //  P.reflect();
       bajar++;
+      score++;
     }
     if (keyCode == RIGHT && movdv) {
       mov++;
