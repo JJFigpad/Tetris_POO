@@ -16,8 +16,8 @@ byte[][] O = {{1, 1}, {1, 1}};
 byte[][] I = {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}};
 byte[][] L = {{0, 1, 0}, {0, 1, 0}, {0, 1, 1}};
 byte[][] J = {{0, 1, 0}, {0, 1, 0}, {1, 1, 0}};
-byte[][] S = {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}};
-byte[][] Z = {{0, 1, 1}, {1, 1, 0}, {0, 0, 0}};
+byte[][] Z = {{0, 0, 0}, {1, 1, 0}, {0, 1, 1}};
+byte[][] S = {{0, 0, 0}, {0, 1, 1}, {1, 1, 0}};
 byte[][][] tetrominos = {T, O, I, L, J, S, Z};
 boolean IRot = true;
 boolean bv = true, movdv = true, moviv = true, rv = true;
@@ -32,7 +32,7 @@ void setup() {
   }
   P = new Tetromino();
   P1 = new Tetromino();
-  P.shape = tetrominos[2];
+  P.shape = tetrominos[int(random(7))];
   P1.shape = tetrominos[int(random(7))];
 }
 
@@ -213,6 +213,7 @@ void glue(int[][] p) {
   bv = true;
   movdv = true;
   moviv = true;
+  rv = true;
   try {
     tableu[p[0][0]+bajar][p[1][0]+mov] = 0;
     tableu[p[0][1]+bajar][p[1][1]+mov] = 0;
@@ -272,6 +273,8 @@ void glue(int[][] p) {
           noLoop();
         }
       }
+     if((P.shape == T && Rc == 3 && tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1) || (P.shape == T && Rc == 1 && tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1) || (P.shape == I && IRot == true && (tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 0 && (tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == J && Rc == 0 && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == J && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == S && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == Z && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == Z && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1)))
+       rv = false;
     }
     catch(ArrayIndexOutOfBoundsException e) {
       /**
@@ -296,7 +299,6 @@ void Extras() { //Texto y decoracion
   text(nl, 50, 260);
   text(score, 50, 390);
 }
-
 
 void keyPressed() {
   if (key == 'q') {
