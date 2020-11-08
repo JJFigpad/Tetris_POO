@@ -1,9 +1,12 @@
 Tetromino P;
 Tetromino P1;
-Tetromino temp;
 final int ROWS = 20;
 final int COLS = 10;
 final int LENGTH = 20;
+final int stateStart = 0;
+final int stateGame = 1;
+final int statePause = 2;
+int state = stateStart;
 int mov = 0;
 int bajar = 0;
 int t = 0; //tiempo
@@ -19,9 +22,7 @@ byte[][] J = {{0, 1, 0}, {0, 1, 0}, {1, 1, 0}};
 byte[][] Z = {{0, 0, 0}, {1, 1, 0}, {0, 1, 1}};
 byte[][] S = {{0, 0, 0}, {0, 1, 1}, {1, 1, 0}};
 byte[][][] tetrominos = {T, O, I, L, J, S, Z};
-boolean IRot = true;
-boolean bv = true, movdv = true, moviv = true, rv = true;
-
+boolean IRot = true, bv = true, movdv = true, moviv = true, rv = true, end = false;
 void setup() {
   size(600, 600);
   textSize(20);
@@ -37,35 +38,62 @@ void setup() {
 }
 
 void draw() {
-  vel = 1500-50*(nivel-1);
   background(20);
-  if (millis() >= t+1500) {
-    bajar++;
-    t = millis();
-  }
-  for (int i = 0; i < 12; i++) {
+  switch(state) {
+    case(stateStart):
     push();
-    translate(i * LENGTH, 0);
-    fill(0);
-    stroke(50);
-    rect(160, 59, LENGTH, LENGTH);
-    rect(160, 480, LENGTH, LENGTH);
+    textSize(60);
+    fill(177,177,177);
+    text("TETRIS", 195, 150);
+    fill(71,13,117);
+    rect(180,200,230,180);
+    fill(0,40,31);
+    triangle(250, 250, 250, 330, 350, 290);
     pop();
-  }
-  for (int i = 0; i < 20; i++) {
+    text("Press to start", 230, 420);
+    if(mouseX < 410 && mouseX > 180 && mouseY > 200 && mouseY < 380 && mousePressed)
+      state++;
+    movdv = false; 
+    moviv = false; 
+    rv = false; 
+    bv = false;
+    break;
+    case(statePause):
+    drawTablero();
+    P.displaytoP();
+    P1.displayP();
+    Extras();
+    movdv = false; 
+    moviv = false; 
+    rv = false; 
+    bv = false;
     push();
-    translate(0, i * LENGTH);
-    fill(0);
-    stroke(50);
-    rect(160, 79, LENGTH, LENGTH);
-    rect(380, 79, LENGTH, LENGTH);
+    textSize(60);
+    fill(255,13,13);
+    text("Pause", 200, 270);
     pop();
+    break;
+    case(stateGame):
+    vel = 1500-50*(nivel-1);
+    if (millis() >= t+1500) {
+      bajar++;
+      t = millis();
+    }
+    drawTablero();
+    P.displaytoP();
+    P1.displayP();
+    Extras();
+    if (end) {
+      println("Game over");
+      push();
+      textSize(40);
+      fill(255);
+      text("GAME OVER", 175, 300);
+      pop();
+      noLoop();
+    }
+    break;
   }
-  drawTablero();
-  P.displaytoP();
-  P1.displayP();
-  Extras();
-  println(Rc);
 }
 
 class Tetromino {
@@ -203,6 +231,7 @@ void siguiente() {
   mov = 0;
   Rc = 0;
   IRot = true;
+  end = false;
   P.shape = P1.shape;
   P1.shape = tetrominos[int(random(7))];
 }
@@ -269,12 +298,12 @@ void glue(int[][] p) {
           }
         }
         catch(ArrayIndexOutOfBoundsException e) {
-          println("Game over");
-          noLoop();
+
+          end = true;
         }
       }
-     if((P.shape == T && Rc == 3 && tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1) || (P.shape == T && Rc == 1 && tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1) || (P.shape == I && IRot == true && (tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 0 && (tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == J && Rc == 0 && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == J && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == S && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == Z && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == Z && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1)))
-       rv = false;
+      if ((P.shape == T && Rc == 3 && tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1) || (P.shape == T && Rc == 1 && tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1) || (P.shape == I && IRot == true && (tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 0 && (tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == L && Rc == 1 && tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1) || (P.shape == L && Rc == 3 && (tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == J && Rc == 0 && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == J && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == J && Rc == 1 && (tableu[p[0][0]+bajar+1][p[1][0]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == L && Rc == 3 && tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1) || (P.shape == S && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == Z && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == Z && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1)))
+        rv = false;
     }
     catch(ArrayIndexOutOfBoundsException e) {
       /**
@@ -285,26 +314,62 @@ void glue(int[][] p) {
 }
 
 void Extras() { //Texto y decoracion
+  for (int i = 0; i < 12; i++) {
+    push();
+    translate(i * LENGTH, 0);
+    fill(0);
+    stroke(50);
+    rect(160, 59, LENGTH, LENGTH);
+    rect(160, 480, LENGTH, LENGTH);
+    pop();
+  }
+  for (int i = 0; i < 20; i++) {
+    push();
+    translate(0, i * LENGTH);
+    fill(0);
+    stroke(50);
+    rect(160, 79, LENGTH, LENGTH);
+    rect(380, 79, LENGTH, LENGTH);
+    pop();
+  }
   push();
-  textSize(40);
+  textSize(45);
   fill(255, 0, 0);
-  text("TETRIS", 435, 415);
+  text("TETRIS", 205, 50);
   pop();
+  push();
   fill(255, 0, 0);
-  text("Lineas:", 30, 230);
-  text("Puntaje:", 30, 360);
-  text("Nivel:", 480, 300);
+  text("Lineas:", 410, 310);
+  text("Puntaje:", 410, 280);
+  text("Nivel:", 410, 250);
   fill(255);
-  text(nivel, 500, 330);
-  text(nl, 50, 260);
-  text(score, 50, 390);
+  text(nivel, 500, 250);
+  text(nl, 500, 310);
+  text(score, 500, 280);
+  text("Press p to stop", 420, 400);
+  pop();
+  push();
+  textSize(13);
+  fill(0, 0, 255);
+  text("Left arrow -Move left", 8, 300);
+  text("Right arrow -Move right", 8, 320);
+  text("Up arrow -Rotate", 8, 340);
+  text("Down arrow -", 8, 360);
+  text("Move down faster", 12, 380);
+  text("q -Change piece", 8, 400);
+  pop();
 }
 
 void keyPressed() {
+  Tetromino temp;
   if (key == 'q') {
     temp = P1;
     P1 = P;
     P = temp;
+  } else if (key == 'p' && state > 0) {
+    state++;
+    if (state == 3)
+      state = 1;
   }
   if (key == CODED) {
     if (keyCode == UP && rv) {
