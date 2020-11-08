@@ -1,16 +1,16 @@
-Tetromino P;
-Tetromino P1;
+Tetromino P; //Tetromino en juego
+Tetromino P1; //Tetromino siguiente
 final int ROWS = 20;
 final int COLS = 10;
 final int LENGTH = 20;
-final int stateStart = 0;
-final int stateGame = 1;
-final int statePause = 2;
+final int stateStart = 0; //Pantalla de inicio
+final int stateGame = 1; //Juego
+final int statePause = 2; //Pausa
 int state = stateStart;
-int mov = 0;
-int bajar = 0;
+int mov = 0; //Desplazamiento horizontal
+int bajar = 0; //Desplazamiento vertical
 int t = 0; //tiempo
-int vel;
+int vel; //Velocidad de bajada
 int Rc = 0;
 int score = 0, nivel = 1, nl = 0;
 int[][] tableu = new int[ROWS][COLS];
@@ -21,8 +21,9 @@ byte[][] L = {{0, 1, 0}, {0, 1, 0}, {0, 1, 1}};
 byte[][] J = {{0, 1, 0}, {0, 1, 0}, {1, 1, 0}};
 byte[][] Z = {{0, 0, 0}, {1, 1, 0}, {0, 1, 1}};
 byte[][] S = {{0, 0, 0}, {0, 1, 1}, {1, 1, 0}};
-byte[][][] tetrominos = {T, O, I, L, J, S, Z};
+byte[][][] tetrominos = {T, O, I, L, J, S, Z}; //Tetrominos
 boolean IRot = true, bv = true, movdv = true, moviv = true, rv = true, end = false;
+
 void setup() {
   size(600, 600);
   textSize(20);
@@ -161,7 +162,10 @@ class Tetromino {
       }
     }
   }
-
+  
+  /**
+   *Tetromino position in board
+   */
   private int[][] update() {
     int[] x = new int[4], y = new int[4];
     int[][] posiciones = {y, x};
@@ -221,6 +225,9 @@ void drawTablero() {
   }
 }
 
+/**
+ *Start line of the tetromino in game since the second round
+ */
 void siguiente() {
   if (P.shape != I && IRot == true)
     bajar = -1;
@@ -234,6 +241,9 @@ void siguiente() {
   P1.shape = tetrominos[int(random(7))];
 }
 
+/*
+ *Glue the tetromino to the board, change board state and verify collisions and valid movements
+ */
 void glue(int[][] p) {
   boolean vmd = false;
   boolean vmi = false;
@@ -300,7 +310,7 @@ void glue(int[][] p) {
           end = true;
         }
       }
-      if ((P.shape == T && Rc == 3 && tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1) || (P.shape == T && Rc == 1 && tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1) || (P.shape == I && IRot == true && (tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == I && IRot == false && (tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == L && Rc == 0 && (tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == L && Rc == 1 && tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1) || (P.shape == L && Rc == 3 && (tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == J && Rc == 0 && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == J && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == J && Rc == 1 && (tableu[p[0][0]+bajar+1][p[1][0]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == L && Rc == 3 && tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1) || (P.shape == S && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == Z && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == Z && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1)))
+      if ((P.shape == T && Rc == 3 && tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1) || (P.shape == T && Rc == 1 && tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1) || (P.shape == T && Rc == 0 && tableu[p[0][1]+bajar-1][p[1][1]+mov] == 1) || (P.shape == T && Rc == 3 && tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1) || (P.shape == I && IRot == false && (tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1)) || (P.shape == I && IRot == true && (tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == L && Rc == 0 && (tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1)) || (P.shape == L && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == L && Rc == 1 && (tableu[p[0][1]+bajar-1][p[1][1]+mov] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == L && Rc == 3 && (tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == J && Rc == 0 && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1)) || (P.shape == J && Rc == 2 && (tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov-1] == 1)) || (P.shape == J && Rc == 1 && (tableu[p[0][0]+bajar+1][p[1][0]+mov] == 1 || tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1)) || (P.shape == J && Rc == 3 && (tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar][p[1][1]+mov+1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == S && (Rc == 1 || Rc == 3) && (tableu[p[0][1]+bajar][p[1][1]+mov-1] == 1 || tableu[p[0][0]+bajar][p[1][0]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)) || (P.shape == Z && (Rc == 0 || Rc == 2) && (tableu[p[0][1]+bajar+1][p[1][1]+mov] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov-1] == 1 || tableu[p[0][2]+bajar+1][p[1][2]+mov] == 1)) || (P.shape == Z && (Rc == 1 || Rc == 3) && (tableu[p[0][0]+bajar][p[1][0]+mov-1] == 1 || tableu[p[0][3]+bajar][p[1][3]+mov+1] == 1 || tableu[p[0][2]+bajar][p[1][2]+mov+1] == 1)))
         rv = false;
     }
     catch(ArrayIndexOutOfBoundsException e) {
@@ -311,7 +321,10 @@ void glue(int[][] p) {
   }
 }
 
-void Extras() { //Texto y decoracion
+/*
+ *Text and visual stuff
+ */
+void Extras() {
   for (int i = 0; i < 12; i++) {
     push();
     translate(i * LENGTH, 0);
@@ -358,12 +371,16 @@ void Extras() { //Texto y decoracion
   pop();
 }
 
+/*
+ *Keys
+ */
 void keyPressed() {
   Tetromino temp;
-  if (key == 'q' && bv) {
+  if (key == 'q' && bv && score > 0) {
     temp = P1;
     P1 = P;
     P = temp;
+    score--;
   } else if (key == 'p' && state > 0) {
     state++;
     if (state == 3)
