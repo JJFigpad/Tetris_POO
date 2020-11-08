@@ -33,7 +33,7 @@ void setup() {
   }
   P = new Tetromino();
   P1 = new Tetromino();
-  P.shape = tetrominos[int(random(7))];
+  P.shape = tetrominos[2];
   P1.shape = tetrominos[int(random(7))];
 }
 
@@ -98,9 +98,7 @@ void draw() {
 
 class Tetromino {
   private byte[][] shape;
-  int c1 = int(random(255));
-  int c2 = int(random(255));
-  int c3 = int(random(255));
+  int[] c = {int(random(255)),int(random(255)),int(random(255))};
 
   public byte[][] getShape() {
     return shape;
@@ -137,7 +135,7 @@ class Tetromino {
     for (int i = 0; i < shape.length; i++) {
       for (int j = 0; j < shape[i].length; j++) {
         if (shape[i][j] != 0) {
-          fill(c1, c2, c3);
+          fill(c[0], c[1], c[2]);
           rect(260+20*j, 79+20*i, LENGTH, LENGTH);
         }
       }
@@ -157,7 +155,7 @@ class Tetromino {
     for (int i = 0; i < shape.length; i++) {
       for (int j = 0; j < shape[i].length; j++) {
         if (shape[i][j] != 0) {
-          fill(c1, c2, c3);
+          fill(c[0], c[1], c[2]);
           rect(470+20*j, 100+20*i, LENGTH, LENGTH);
         }
       }
