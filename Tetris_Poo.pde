@@ -380,7 +380,7 @@ void keyPressed() {
     temp = P1;
     P1 = P;
     P = temp;
-    score--;
+    score-=5;
   } else if (key == 'p' && state > 0) {
     state++;
     if (state == 3)
