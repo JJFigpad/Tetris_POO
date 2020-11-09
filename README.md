@@ -1,3 +1,5 @@
+<p align="center"><img src="https://seeklogo.com/images/U/Universidad_Nacional_de_Colombia_-_Sede_Bogot_and__225_-logo-A05EAD6D0F-seeklogo.com.png" width="100%"></p>
+
 # Tetris_POO
 **Nombre:** Juan José Figueroa
 
