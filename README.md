@@ -7,7 +7,7 @@
 
 1. [Introducción](#introducción)
 2. [Objetivo](#objetivo)
-3. [Representación de los tetrominos](#representación de los tetrominos)
+3. [Representación de los tetrominos](#representación_de_los_tetrominos)
 4. [Representación del tablero y función `glue`](#representación del tablero y función `glue`)
 5. [Referencias](#referencias)
 
