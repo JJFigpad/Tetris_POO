@@ -30,7 +30,7 @@ En este proyecto se encuentra una única clase: la clase Tetromino. Dicha clase 
 representado.
 - **c:** es un arreglo unidimensional de tamaño 3, el cual contiene tres enteros escogidos al azar entre 0 y 255.
 ###### Métodos
-- **get / set**: estos métodos son los encargados de leer y asignar los valores a la matriz cuadrada `shape`, la cual es la base del dibujo de los tetrominos 
+- **get y set**: estos métodos son los encargados de leer y asignar los valores a la matriz cuadrada `shape`, la cual es la base del dibujo de los tetrominos 
 y sus propiedades. Para más información sobre el uso y el funcionamiento de estos métodos revisar la referencia señanala (*).
 - **rotate():** este método es el encargado de la rotación del tetromino en juego. Funciona rotando los valores de la matriz cuadrara `shape` en sentido horario.
 - **displaytoP():** este método es el encargado de dibujar y a traves del cual surte efecto los desplazamientos horizonatales y verticales del tetromino en juego.
@@ -47,3 +47,11 @@ función `glue`:
 Gracias a lo que este método retorna, esta función utiliza la posisición del tetromino sobre el tablero para verificar las colisiones con los limites del tablero,
 los cuales son manejados a través de manejo de excepciones, las colisiones con casillas ocupadas, las cuales son casillas donde el valor de la matriz es 1, el fin
 del recorrido de un tetromino, su representacion en tablero como casillas llenas y la continuación del juego.
+
+## Referencias
+1. Jean Pierre Charalambos - Plantilla base https://github.com/objetos/p5.polyomino.js
+2. http://www.bowdoin.edu/~echown/courses/210/javalab9/TetrisAssignment.pdf
+3. get and set - https://www.w3schools.com/java/java_encapsulation.asp
+4. Processing API - https://processing.org/reference/
+5. https://github.com/younesyu/one_night_tetris
+6. https://forum.processing.org/two/discussion/24334/i-m-trying-to-make-a-simple-tetris-game-but-i-can-t-figure-out-how-to-make-the-shapes-act-as-one
