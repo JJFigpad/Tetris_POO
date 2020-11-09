@@ -47,6 +47,8 @@ Gracias a lo que este método retorna, esta función utiliza la posisición del 
 ## Conclusiones
 Al comparar el anterior proyecto con este, el punto más notorio deberia ser la extensión de los mismos. Mientras en el primero proyecto se superaron las mil líneas de código, en este segundo se lograron llevar a cabo más cosas en una menor cantidad de líneas, lo cual es un gran avance tanto en el proceso de abstracción de los problemas como en la toma de decisiones sobre el camino que va a seguir el proyecto. También se asegura que solo se vea afectado el objeto con los procesos con los que se desea afectarlo, sin efectos colaterales sobre el mismo o sobre el resto del código.
 
+Además, se facilita mucho el tema de las colisiones y de los límites del tablero con el manejo de excepciones.
+
 Pero también se ha de decir que para la practicidad de este paradigma de programación es necesario que los objetos compartan la mayoria de de atributos, puesto que en caso contrario la generación de muchas clases vuelve confuso y engorroso su uso, e incluso se vuelve algo innecesario usar este paradigma.
 
 Una futura implementación sería un Tetris 3D, donde la eliminación de fila se da al completar una linea de la base de un cubo.
