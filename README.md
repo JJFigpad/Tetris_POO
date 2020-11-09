@@ -5,11 +5,11 @@
 
 ## Índice
 
-I. [Introducción](#introducción)
-II. [Objetivo](#objetivo)
-III. [Representación de los tetrominos](#representación de los tetrominos)
-IV. [Representación del tablero y función `glue`](#representación del tablero y función `glue`)
-V. [Referencias](#referencias)
+1. [Introducción](#introducción)
+2. [Objetivo](#objetivo)
+3. [Representación de los tetrominos](#representación de los tetrominos)
+4. [Representación del tablero y función `glue`](#representación del tablero y función `glue`)
+5. [Referencias](#referencias)
 
 ## Introducción
 Como segunda entrega del curso de Programación Orientada a Objetos, este proyecto es una versión del juego Tetris en el lenguaje de Processing (JAVA) bajo 
